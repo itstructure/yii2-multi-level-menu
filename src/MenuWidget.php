@@ -125,7 +125,8 @@ class MenuWidget extends Widget
         $items = [];
 
         /** @var ActiveRecord $item */
-        for ($i=0; $i < count($models); $i++) {
+        $modelsCount = count($models);
+        for ($i=0; $i < $modelsCount; $i++) {
             $item = $models[$i];
             $items[$item->{$this->primaryKeyName}]['data'] = $item;
         }

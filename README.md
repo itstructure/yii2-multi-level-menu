@@ -4,6 +4,13 @@ Yii2 Multilevel menu widget
 1 Introduction
 ----------------------------
 
+[![Latest Stable Version](https://poser.pugx.org/itstructure/yii2-multi-level-menu/v/stable)](https://packagist.org/packages/itstructure/yii2-multi-level-menu)
+[![Latest Unstable Version](https://poser.pugx.org/itstructure/yii2-multi-level-menu/v/unstable)](https://packagist.org/packages/itstructure/yii2-multi-level-menu)
+[![License](https://poser.pugx.org/itstructure/yii2-multi-level-menu/license)](https://packagist.org/packages/itstructure/yii2-multi-level-menu)
+[![Total Downloads](https://poser.pugx.org/itstructure/yii2-multi-level-menu/downloads)](https://packagist.org/packages/itstructure/yii2-multi-level-menu)
+[![Build Status](https://scrutinizer-ci.com/g/itstructure/yii2-multi-level-menu/badges/build.png?b=master)](https://scrutinizer-ci.com/g/itstructure/yii2-multi-level-menu/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/itstructure/yii2-multi-level-menu/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/itstructure/yii2-multi-level-menu/?branch=master)
+
 This widget is designed to display a multilevel menu, in which there can be nested submenus. Used for Yii2 framework.
 
 The widget uses data from the **database**, in which there are, in addition to the primary keys, also the parent keys.
@@ -53,7 +60,7 @@ echo MenuWidget::widget([
 Example of ```itemTemplate``` file:
 
 ```php
-use yii\helpers\{Url, Html, ArrayHelper};
+use yii\helpers\{Url, Html};
 /* @var app\models\Page $data */
 ```
 ```html
