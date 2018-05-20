@@ -15,10 +15,16 @@ use yii\data\ActiveDataProvider;
  * @property string $parentKeyName Relation key name.
  * @property string $mainContainerTag Main container html tag.
  * @property array $mainContainerOptions Main container html options.
+ * @property string $subMainContainerTag Sub main container html tag.
+ * @property array $subMainContainerOptions Sub main container html options.
  * @property string $itemContainerTag Item container html tag.
  * @property array $itemContainerOptions Item container html options.
+ * @property string $subItemContainerTag Sub item container html tag.
+ * @property array $subItemContainerOptions Sub item container html options.
  * @property string $itemTemplate Item template to display widget elements.
  * @property array $itemTemplateParams Addition item template params.
+ * @property string $subItemTemplate Sub item template to display widget elements.
+ * @property array $subItemTemplateParams Addition sub item template params.
  * @property ActiveDataProvider $dataProvider Data provider records.
  *
  * @package Itstructure\MultiLevelMenu
@@ -52,6 +58,18 @@ class MenuWidget extends Widget
     public $mainContainerOptions = [];
 
     /**
+     * Sub main container html tag.
+     * @var string
+     */
+    public $subMainContainerTag = 'ul';
+
+    /**
+     * Sub main container html options.
+     * @var array
+     */
+    public $subMainContainerOptions = [];
+
+    /**
      * Item container html tag.
      * @var string
      */
@@ -62,6 +80,18 @@ class MenuWidget extends Widget
      * @var array
      */
     public $itemContainerOptions = [];
+
+    /**
+     * Sub item container html tag.
+     * @var string
+     */
+    public $subItemContainerTag = 'li';
+
+    /**
+     * Sub item container html options.
+     * @var array
+     */
+    public $subItemContainerOptions = [];
 
     /**
      * Item template to display widget elements.
@@ -76,6 +106,18 @@ class MenuWidget extends Widget
     public $itemTemplateParams = [];
 
     /**
+     * Sub item template to display widget elements.
+     * @var string
+     */
+    public $subItemTemplate;
+
+    /**
+     * Addition sub item template params.
+     * @var array
+     */
+    public $subItemTemplateParams = [];
+
+    /**
      * Data provider records.
      * @var ActiveDataProvider
      */
@@ -87,13 +129,7 @@ class MenuWidget extends Widget
      */
     public function run()
     {
-        if (null === $this->dataProvider){
-            throw  new InvalidConfigException('Parameter dataProvider is not defined.');
-        }
-
-        if (null === $this->itemTemplate || !is_string($this->itemTemplate)){
-            throw  new InvalidConfigException('Item template is not defined.');
-        }
+        $this->checkConfiguration();
 
         /** @var ActiveRecord[] $models */
         $models = array_values($this->dataProvider->getModels());
@@ -144,9 +180,10 @@ class MenuWidget extends Widget
     /**
      * Base render.
      * @param array $items
+     * @param bool $initLevel
      * @return string
      */
-    private function renderItems(array $items): string
+    private function renderItems(array $items, bool $initLevel = true): string
     {
         if (count($items) == 0){
             return '';
@@ -156,16 +193,89 @@ class MenuWidget extends Widget
 
         /** @var array $item */
         foreach ($items as $item) {
-            $contentLi = $this->render($this->itemTemplate, ArrayHelper::merge([
+            $contentLi = $this->render($this->currentItemTemplate($initLevel), ArrayHelper::merge([
                 'data' => $item['data']
-            ], $this->itemTemplateParams));
+            ], $this->currentItemTemplateParams($initLevel)));
 
             if (isset($item['items'])){
-                $contentLi .= $this->renderItems($item['items']);
+                $contentLi .= $this->renderItems($item['items'], false);
             }
-            $outPut .= Html::tag($this->itemContainerTag, $contentLi, $this->itemContainerOptions);
+            $outPut .= Html::tag($this->currentItemContainerTag($initLevel), $contentLi, $this->currentItemContainerOptions($initLevel));
         }
 
-        return Html::tag($this->mainContainerTag, $outPut, $this->mainContainerOptions);
+        return Html::tag($this->currentMainContainerTag($initLevel), $outPut, $this->currentMainContainerOptions($initLevel));
+    }
+
+    /**
+     * @param bool $initLevel
+     * @return string
+     */
+    private function currentItemTemplate(bool $initLevel = true): string
+    {
+        return $initLevel ? $this->itemTemplate : $this->subItemTemplate;
+    }
+
+    /**
+     * @param bool $initLevel
+     * @return array
+     */
+    private function currentItemTemplateParams(bool $initLevel = true): array
+    {
+        return $initLevel ? $this->itemTemplateParams : $this->subItemTemplateParams;
+    }
+
+    /**
+     * @param bool $initLevel
+     * @return string
+     */
+    private function currentMainContainerTag(bool $initLevel = true): string
+    {
+        return $initLevel ? $this->mainContainerTag : $this->subMainContainerTag;
+    }
+
+    /**
+     * @param bool $initLevel
+     * @return array
+     */
+    private function currentMainContainerOptions(bool $initLevel = true): array
+    {
+        return $initLevel ? $this->mainContainerOptions : $this->subMainContainerOptions;
+    }
+
+    /**
+     * @param bool $initLevel
+     * @return string
+     */
+    private function currentItemContainerTag(bool $initLevel = true): string
+    {
+        return $initLevel ? $this->itemContainerTag : $this->subItemContainerTag;
+    }
+
+    /**
+     * @param bool $initLevel
+     * @return array
+     */
+    private function currentItemContainerOptions(bool $initLevel = true): array
+    {
+        return $initLevel ? $this->itemContainerOptions : $this->subItemContainerOptions;
+    }
+
+    /**
+     * Check for configure.
+     * @throws InvalidConfigException
+     */
+    private function checkConfiguration()
+    {
+        if (null === $this->dataProvider){
+            throw  new InvalidConfigException('Parameter dataProvider is not defined.');
+        }
+
+        if (null === $this->itemTemplate || !is_string($this->itemTemplate)){
+            throw  new InvalidConfigException('Item template is not defined.');
+        }
+
+        if (null === $this->subItemTemplate || !is_string($this->subItemTemplate)){
+            $this->subItemTemplate = $this->itemTemplate;
+        }
     }
 }
