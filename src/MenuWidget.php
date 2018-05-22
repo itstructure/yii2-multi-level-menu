@@ -5,7 +5,6 @@ namespace Itstructure\MultiLevelMenu;
 use yii\db\ActiveRecord;
 use yii\helpers\{Html, ArrayHelper};
 use yii\base\{Widget, InvalidConfigException};
-use yii\data\ActiveDataProvider;
 
 /**
  * Class MenuWidget.
@@ -25,7 +24,7 @@ use yii\data\ActiveDataProvider;
  * @property array $itemTemplateParams Addition item template params.
  * @property string $subItemTemplate Sub item template to display widget elements.
  * @property array $subItemTemplateParams Addition sub item template params.
- * @property ActiveDataProvider $dataProvider Data provider records.
+ * @property ActiveRecord[] $data Data records.
  *
  * @package Itstructure\MultiLevelMenu
  *
@@ -118,10 +117,10 @@ class MenuWidget extends Widget
     public $subItemTemplateParams = [];
 
     /**
-     * Data provider records.
-     * @var ActiveDataProvider
+     * Data records.
+     * @var ActiveRecord[]
      */
-    private $dataProvider;
+    public $data;
 
     /**
      * Starts the output widget of the multi level view records according with the menu type.
@@ -131,25 +130,13 @@ class MenuWidget extends Widget
     {
         $this->checkConfiguration();
 
-        /** @var ActiveRecord[] $models */
-        $models = array_values($this->dataProvider->getModels());
-        $models = $this->groupLevels($models);
-
-        return $this->renderItems($models);
-    }
-
-    /**
-     * Set data provider.
-     * @param ActiveDataProvider $dataProvider
-     */
-    public function setDataProvider(ActiveDataProvider $dataProvider): void
-    {
-        $this->dataProvider = $dataProvider;
+        return $this->renderItems($this->groupLevels($this->data));
     }
 
     /**
      * Group records in to sub levels according with the relation to parent records.
      * @param array $models
+     * @throws InvalidConfigException
      * @return array
      */
     private function groupLevels(array $models): array
@@ -164,6 +151,11 @@ class MenuWidget extends Widget
         $modelsCount = count($models);
         for ($i=0; $i < $modelsCount; $i++) {
             $item = $models[$i];
+
+            if (!($item instanceof ActiveRecord)){
+                throw  new InvalidConfigException('Record with '.$i.' key must be an instance of ActiveRecord.');
+            }
+
             $items[$item->{$this->primaryKeyName}]['data'] = $item;
         }
 
@@ -266,10 +258,6 @@ class MenuWidget extends Widget
      */
     private function checkConfiguration()
     {
-        if (null === $this->dataProvider){
-            throw  new InvalidConfigException('Parameter dataProvider is not defined.');
-        }
-
         if (null === $this->itemTemplate || !is_string($this->itemTemplate)){
             throw  new InvalidConfigException('Item template is not defined.');
         }

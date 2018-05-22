@@ -29,17 +29,19 @@ Data from the **database** is taken by **yii\data\ActiveDataProvider**, which mu
 
 Via composer:
 
-```composer require "itstructure/yii2-multi-level-menu": "^1.1.0"```
+```composer require "itstructure/yii2-multi-level-menu": "~2.0.0"```
 
 or in section **require** of composer.json file set the following:
 ```
 "require": {
-    "itstructure/yii2-multi-level-menu": "^1.1.0"
+    "itstructure/yii2-multi-level-menu": "~2.0.0"
 }
 ```
 and command ```composer install```, if you install yii2 project extensions first,
 
 or command ```composer update```, if all yii2 project extensions are already installed.
+
+**Warning!** Version 2.* is very different from 1.*.
 
 ## 4 Usage
 
@@ -52,7 +54,7 @@ use Itstructure\MultiLevelMenu\MenuWidget;
 ```
 ```php
 echo MenuWidget::widget([
-    'dataProvider' => $dataProvider,
+    'data' => array_values($dataProvider->getModels()),
     'itemTemplate' => '@app/views/MultiLevelMenu/main.php'
 ]);
 ```
