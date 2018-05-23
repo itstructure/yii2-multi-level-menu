@@ -14,16 +14,10 @@ use yii\base\{Widget, InvalidConfigException};
  * @property string $parentKeyName Relation key name.
  * @property string $mainContainerTag Main container html tag.
  * @property array $mainContainerOptions Main container html options.
- * @property string $subMainContainerTag Sub main container html tag.
- * @property array $subMainContainerOptions Sub main container html options.
  * @property string $itemContainerTag Item container html tag.
  * @property array $itemContainerOptions Item container html options.
- * @property string $subItemContainerTag Sub item container html tag.
- * @property array $subItemContainerOptions Sub item container html options.
- * @property string $itemTemplate Item template to display widget elements.
+ * @property string|array $itemTemplate Item template to display widget elements.
  * @property array $itemTemplateParams Addition item template params.
- * @property string $subItemTemplate Sub item template to display widget elements.
- * @property array $subItemTemplateParams Addition sub item template params.
  * @property ActiveRecord[] $data Data records.
  *
  * @package Itstructure\MultiLevelMenu
@@ -57,18 +51,6 @@ class MenuWidget extends Widget
     public $mainContainerOptions = [];
 
     /**
-     * Sub main container html tag.
-     * @var string
-     */
-    public $subMainContainerTag = 'ul';
-
-    /**
-     * Sub main container html options.
-     * @var array
-     */
-    public $subMainContainerOptions = [];
-
-    /**
      * Item container html tag.
      * @var string
      */
@@ -81,20 +63,8 @@ class MenuWidget extends Widget
     public $itemContainerOptions = [];
 
     /**
-     * Sub item container html tag.
-     * @var string
-     */
-    public $subItemContainerTag = 'li';
-
-    /**
-     * Sub item container html options.
-     * @var array
-     */
-    public $subItemContainerOptions = [];
-
-    /**
      * Item template to display widget elements.
-     * @var string
+     * @var string|array
      */
     public $itemTemplate;
 
@@ -103,18 +73,6 @@ class MenuWidget extends Widget
      * @var array
      */
     public $itemTemplateParams = [];
-
-    /**
-     * Sub item template to display widget elements.
-     * @var string
-     */
-    public $subItemTemplate;
-
-    /**
-     * Addition sub item template params.
-     * @var array
-     */
-    public $subItemTemplateParams = [];
 
     /**
      * Data records.
@@ -131,6 +89,46 @@ class MenuWidget extends Widget
         $this->checkConfiguration();
 
         return $this->renderItems($this->groupLevels($this->data));
+    }
+
+    /**
+     * Check whether a particular record can be used as a parent.
+     * @param ActiveRecord $mainModel
+     * @param int $newParentId
+     * @param string $primaryKeyName
+     * @param string $parentKeyName
+     * @return bool
+     */
+    public static function checkNewParentId(ActiveRecord $mainModel, int $newParentId, string $primaryKeyName = 'id', string $parentKeyName = 'parentId'): bool
+    {
+        $parentRecord = $mainModel::find()->select([$primaryKeyName, $parentKeyName])->where([
+            $primaryKeyName => $newParentId
+        ])->one();
+
+        if ($mainModel->{$primaryKeyName} === $parentRecord->{$primaryKeyName}){
+            return false;
+        }
+
+        if (null === $parentRecord->{$parentKeyName}){
+            return true;
+        }
+
+        return static::checkNewParentId($mainModel, $parentRecord->{$parentKeyName});
+    }
+
+    /**
+     * Check for configure.
+     * @throws InvalidConfigException
+     */
+    private function checkConfiguration()
+    {
+        if (null === $this->itemTemplate){
+            throw  new InvalidConfigException('Item template is not defined.');
+        }
+
+        if (is_array($this->itemTemplate) && !isset($this->itemTemplate['levels'])){
+            throw  new InvalidConfigException('If item template is array, that has to contain levels key.');
+        }
     }
 
     /**
@@ -172,10 +170,10 @@ class MenuWidget extends Widget
     /**
      * Base render.
      * @param array $items
-     * @param bool $initLevel
+     * @param int $level
      * @return string
      */
-    private function renderItems(array $items, bool $initLevel = true): string
+    private function renderItems(array $items, int $level = 0): string
     {
         if (count($items) == 0){
             return '';
@@ -185,85 +183,49 @@ class MenuWidget extends Widget
 
         /** @var array $item */
         foreach ($items as $item) {
-            $contentLi = $this->render($this->currentItemTemplate($initLevel), ArrayHelper::merge([
+            $contentLi = $this->render($this->levelAttributeValue('itemTemplate', $level), ArrayHelper::merge([
                 'data' => $item['data']
-            ], $this->currentItemTemplateParams($initLevel)));
+            ], $this->levelAttributeValue('itemTemplateParams', $level)));
 
             if (isset($item['items'])){
-                $contentLi .= $this->renderItems($item['items'], false);
+                $contentLi .= $this->renderItems($item['items'], $level + 1);
             }
-            $outPut .= Html::tag($this->currentItemContainerTag($initLevel), $contentLi, $this->currentItemContainerOptions($initLevel));
+            $outPut .= Html::tag($this->itemContainerTag, $contentLi, $this->levelAttributeValue('itemContainerOptions', $level));
         }
 
-        return Html::tag($this->currentMainContainerTag($initLevel), $outPut, $this->currentMainContainerOptions($initLevel));
+        return Html::tag($this->mainContainerTag, $outPut, $this->levelAttributeValue('mainContainerOptions', $level));
     }
 
     /**
-     * @param bool $initLevel
-     * @return string
-     */
-    private function currentItemTemplate(bool $initLevel = true): string
-    {
-        return $initLevel ? $this->itemTemplate : $this->subItemTemplate;
-    }
-
-    /**
-     * @param bool $initLevel
-     * @return array
-     */
-    private function currentItemTemplateParams(bool $initLevel = true): array
-    {
-        return $initLevel ? $this->itemTemplateParams : $this->subItemTemplateParams;
-    }
-
-    /**
-     * @param bool $initLevel
-     * @return string
-     */
-    private function currentMainContainerTag(bool $initLevel = true): string
-    {
-        return $initLevel ? $this->mainContainerTag : $this->subMainContainerTag;
-    }
-
-    /**
-     * @param bool $initLevel
-     * @return array
-     */
-    private function currentMainContainerOptions(bool $initLevel = true): array
-    {
-        return $initLevel ? $this->mainContainerOptions : $this->subMainContainerOptions;
-    }
-
-    /**
-     * @param bool $initLevel
-     * @return string
-     */
-    private function currentItemContainerTag(bool $initLevel = true): string
-    {
-        return $initLevel ? $this->itemContainerTag : $this->subItemContainerTag;
-    }
-
-    /**
-     * @param bool $initLevel
-     * @return array
-     */
-    private function currentItemContainerOptions(bool $initLevel = true): array
-    {
-        return $initLevel ? $this->itemContainerOptions : $this->subItemContainerOptions;
-    }
-
-    /**
-     * Check for configure.
+     * Get attribute values in current level.
+     * @param string $attributeName
+     * @param int $level
      * @throws InvalidConfigException
+     * @return mixed
      */
-    private function checkConfiguration()
+    private function levelAttributeValue(string $attributeName, int $level)
     {
-        if (null === $this->itemTemplate || !is_string($this->itemTemplate)){
-            throw  new InvalidConfigException('Item template is not defined.');
+        $attributeValue = $this->{$attributeName};
+
+        if (is_string($attributeValue)){
+            return $attributeValue;
         }
 
-        if (null === $this->subItemTemplate || !is_string($this->subItemTemplate)){
-            $this->subItemTemplate = $this->itemTemplate;
+        if (is_array($attributeValue) && !isset($attributeValue['levels'])){
+            return $attributeValue;
         }
+
+        if (is_array($attributeValue) && isset($attributeValue['levels'])){
+
+            $countLevels = count($attributeValue['levels']);
+
+            if ($countLevels == 0){
+                throw new InvalidConfigException('Level values are not defined for attribute '.$attributeName.'.');
+            }
+
+            return isset($attributeValue['levels'][$level]) ? $attributeValue['levels'][$level] : $attributeValue['levels'][($countLevels-1)];
+        }
+
+        throw new InvalidConfigException('Attribute '.$attributeName.' is not defined correctly.');
     }
 }

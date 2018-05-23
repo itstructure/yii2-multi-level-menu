@@ -15,7 +15,7 @@ This widget is designed to display a multilevel menu, in which there can be nest
 
 The widget uses data from the **database**, in which there are, in addition to the primary keys, also the parent keys.
 
-Data from the **database** is taken by **yii\data\ActiveDataProvider**, which must be used in **Search model** (for example PageSearch).
+Data from the **database** is taken from an active model, which instance of **yii\db\ActiveRecord**.
 
 2 Dependencies
 ----------------------------
@@ -29,19 +29,19 @@ Data from the **database** is taken by **yii\data\ActiveDataProvider**, which mu
 
 Via composer:
 
-```composer require "itstructure/yii2-multi-level-menu": "~2.0.0"```
+```composer require "itstructure/yii2-multi-level-menu": "~3.0.0"```
 
 or in section **require** of composer.json file set the following:
 ```
 "require": {
-    "itstructure/yii2-multi-level-menu": "~2.0.0"
+    "itstructure/yii2-multi-level-menu": "~3.0.0"
 }
 ```
 and command ```composer install```, if you install yii2 project extensions first,
 
 or command ```composer update```, if all yii2 project extensions are already installed.
 
-**Warning!** Version 2.* is very different from 1.*.
+**Warning!** Version 3.* is very different from 2.*.
 
 ## 4 Usage
 
@@ -72,6 +72,28 @@ use yii\helpers\{Url, Html};
         Url::to(['view', 'id' => $data->id])
     ) ?>
 </span>
+```
+
+Example when there are some properties for nesting levels:
+
+```php
+use Itstructure\MultiLevelMenu\MenuWidget;
+```
+```php
+echo MenuWidget::widget([
+    'data' => array_values($dataProvider->getModels()),
+    'itemTemplate' => '@app/views/MultiLevelMenu/main.php'
+    'mainContainerOptions' => [
+        'class' => 'list-group'
+    ],
+    'itemContainerOptions' => [
+        'levels' => [
+            ['class' => 'list-group-item'],
+            ['class' => 'list-group-item list-group-item-success'],
+            ['class' => 'list-group-item list-group-item-warning'],
+        ]
+    ],
+]);
 ```
 
 ### 4.2 Database table structure example
