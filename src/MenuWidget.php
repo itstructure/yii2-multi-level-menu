@@ -117,6 +117,17 @@ class MenuWidget extends Widget
     }
 
     /**
+     * Reassigning child objects to their new parent after delete the main model record.
+     * @param ActiveRecord $mainModel
+     * @param string $primaryKeyName
+     * @param string $parentKeyName
+     */
+    public static function afterDeleteMainModel(ActiveRecord $mainModel, string $primaryKeyName = 'id', string $parentKeyName = 'parentId'): void
+    {
+        $mainModel::updateAll([$parentKeyName => $mainModel->{$parentKeyName}], ['=', $parentKeyName, $mainModel->{$primaryKeyName}]);
+    }
+
+    /**
      * Check for configure.
      * @throws InvalidConfigException
      */
