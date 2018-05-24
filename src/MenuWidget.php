@@ -10,6 +10,7 @@ use yii\base\{Widget, InvalidConfigException};
  * Class MenuWidget.
  * Multilevel menu widget.
  *
+ * @property string $menuId Init level menu html tag id.
  * @property string $primaryKeyName Primary key name.
  * @property string $parentKeyName Relation key name.
  * @property string $mainContainerTag Main container html tag.
@@ -26,6 +27,12 @@ use yii\base\{Widget, InvalidConfigException};
  */
 class MenuWidget extends Widget
 {
+    /**
+     * Init level menu html tag id.
+     * @var string
+     */
+    public $menuId;
+
     /**
      * Primary key name.
      * @var string
@@ -204,7 +211,13 @@ class MenuWidget extends Widget
             $outPut .= Html::tag($this->itemContainerTag, $contentLi, $this->levelAttributeValue('itemContainerOptions', $level));
         }
 
-        return Html::tag($this->mainContainerTag, $outPut, $this->levelAttributeValue('mainContainerOptions', $level));
+        $mainContainerOptions = $this->levelAttributeValue('mainContainerOptions', $level);
+
+        if ($level == 0 && null !== $this->menuId){
+            $mainContainerOptions = ArrayHelper::merge($mainContainerOptions, ['id' => $this->menuId]);
+        }
+
+        return Html::tag($this->mainContainerTag, $outPut, $mainContainerOptions);
     }
 
     /**

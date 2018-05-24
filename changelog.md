@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.1.0 May 24, 2018:**
+- Add ```menuId``` attribute.
+
 **3.0.0 May 23, 2018:**
 - Remove sub attributes.
 - Add ```levelAttributeValue()``` function.
