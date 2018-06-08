@@ -13,9 +13,9 @@ use yii\base\{Widget, InvalidConfigException};
  * @property string $menuId Init level menu html tag id.
  * @property string $primaryKeyName Primary key name.
  * @property string $parentKeyName Relation key name.
- * @property string $mainContainerTag Main container html tag.
+ * @property string|array|null $mainContainerTag Main container html tag.
  * @property array $mainContainerOptions Main container html options.
- * @property string $itemContainerTag Item container html tag.
+ * @property string|array|null $itemContainerTag Item container html tag.
  * @property array $itemContainerOptions Item container html options.
  * @property string|array $itemTemplate Item template to display widget elements.
  * @property array $itemTemplateParams Addition item template params.
@@ -47,7 +47,7 @@ class MenuWidget extends Widget
 
     /**
      * Main container html tag.
-     * @var string
+     * @var string|array|null
      */
     public $mainContainerTag = 'ul';
 
@@ -59,7 +59,7 @@ class MenuWidget extends Widget
 
     /**
      * Item container html tag.
-     * @var string
+     * @var string|array|null
      */
     public $itemContainerTag = 'li';
 
@@ -208,16 +208,18 @@ class MenuWidget extends Widget
             if (isset($item['items'])){
                 $contentLi .= $this->renderItems($item['items'], $level + 1);
             }
-            $outPut .= Html::tag($this->itemContainerTag, $contentLi, $this->levelAttributeValue('itemContainerOptions', $level));
+            $itemContainerTag = $this->levelAttributeValue('itemContainerTag', $level);
+            $outPut .= Html::tag($itemContainerTag, $contentLi, $this->levelAttributeValue('itemContainerOptions', $level));
         }
 
+        $mainContainerTag = $this->levelAttributeValue('mainContainerTag', $level);
         $mainContainerOptions = $this->levelAttributeValue('mainContainerOptions', $level);
 
         if ($level == 0 && null !== $this->menuId){
             $mainContainerOptions = ArrayHelper::merge($mainContainerOptions, ['id' => $this->menuId]);
         }
 
-        return Html::tag($this->mainContainerTag, $outPut, $mainContainerOptions);
+        return Html::tag($mainContainerTag, $outPut, $mainContainerOptions);
     }
 
     /**

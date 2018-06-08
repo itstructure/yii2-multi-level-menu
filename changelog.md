@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.2.0 June 8, 2018:**
+- Added ability to get value of ```itemContainerTag``` and ```mainContainerTag``` attributes for each nesting level.
+
 **3.1.0 May 24, 2018:**
 - Add ```menuId``` attribute.
 
