@@ -201,19 +201,19 @@ class MenuWidget extends Widget
 
         /** @var array $item */
         foreach ($items as $item) {
-            $contentLi = $this->render($this->levelAttributeValue('itemTemplate', $level), ArrayHelper::merge([
+            $contentLi = $this->render($this->levelAttributeValue($this->itemTemplate, $level), ArrayHelper::merge([
                 'data' => $item['data']
-            ], $this->levelAttributeValue('itemTemplateParams', $level)));
+            ], $this->levelAttributeValue($this->itemTemplateParams, $level)));
 
             if (isset($item['items'])){
                 $contentLi .= $this->renderItems($item['items'], $level + 1);
             }
-            $itemContainerTag = $this->levelAttributeValue('itemContainerTag', $level);
-            $outPut .= Html::tag($itemContainerTag, $contentLi, $this->levelAttributeValue('itemContainerOptions', $level));
+            $itemContainerTag = $this->levelAttributeValue($this->itemContainerTag, $level);
+            $outPut .= Html::tag($itemContainerTag, $contentLi, $this->levelAttributeValue($this->itemContainerOptions, $level));
         }
 
-        $mainContainerTag = $this->levelAttributeValue('mainContainerTag', $level);
-        $mainContainerOptions = $this->levelAttributeValue('mainContainerOptions', $level);
+        $mainContainerTag = $this->levelAttributeValue($this->mainContainerTag, $level);
+        $mainContainerOptions = $this->levelAttributeValue($this->mainContainerOptions, $level);
 
         if ($level == 0 && null !== $this->menuId){
             $mainContainerOptions = ArrayHelper::merge($mainContainerOptions, ['id' => $this->menuId]);
@@ -224,15 +224,13 @@ class MenuWidget extends Widget
 
     /**
      * Get attribute values in current level.
-     * @param string $attributeName
+     * @param string|array $attributeValue
      * @param int $level
      * @throws InvalidConfigException
      * @return mixed
      */
-    private function levelAttributeValue(string $attributeName, int $level)
+    private function levelAttributeValue($attributeValue, int $level)
     {
-        $attributeValue = $this->{$attributeName};
-
         if (is_string($attributeValue)){
             return $attributeValue;
         }
@@ -246,12 +244,12 @@ class MenuWidget extends Widget
             $countLevels = count($attributeValue['levels']);
 
             if ($countLevels == 0){
-                throw new InvalidConfigException('Level values are not defined for attribute '.$attributeName.'.');
+                throw new InvalidConfigException('Level values are not defined for attribute.');
             }
 
             return isset($attributeValue['levels'][$level]) ? $attributeValue['levels'][$level] : $attributeValue['levels'][($countLevels-1)];
         }
 
-        throw new InvalidConfigException('Attribute '.$attributeName.' is not defined correctly.');
+        throw new InvalidConfigException('Attribute is not defined correctly.');
     }
 }

@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.2.1 June 27, 2018:**
+- Modify ```levelAttributeValue()``` function.
+
 **3.2.0 June 8, 2018:**
 - Added ability to get value of ```itemContainerTag``` and ```mainContainerTag``` attributes for each nesting level.
 
