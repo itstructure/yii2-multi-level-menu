@@ -13,9 +13,9 @@ use yii\base\{Widget, InvalidConfigException};
  * @property string $menuId Init level menu html tag id.
  * @property string $primaryKeyName Primary key name.
  * @property string $parentKeyName Relation key name.
- * @property string|array|null $mainContainerTag Main container html tag.
+ * @property string|array $mainContainerTag Main container html tag.
  * @property array $mainContainerOptions Main container html options.
- * @property string|array|null $itemContainerTag Item container html tag.
+ * @property string|array $itemContainerTag Item container html tag.
  * @property array $itemContainerOptions Item container html options.
  * @property string|array $itemTemplate Item template to display widget elements.
  * @property array $itemTemplateParams Addition item template params.
@@ -47,7 +47,7 @@ class MenuWidget extends Widget
 
     /**
      * Main container html tag.
-     * @var string|array|null
+     * @var string|array
      */
     public $mainContainerTag = 'ul';
 
@@ -59,7 +59,7 @@ class MenuWidget extends Widget
 
     /**
      * Item container html tag.
-     * @var string|array|null
+     * @var string|array
      */
     public $itemContainerTag = 'li';
 
