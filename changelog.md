@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.2.2 June 27, 2018:**
+- Modify ```groupLevels()``` function for the count of models.
+
 **3.2.1 June 27, 2018:**
 - Modify ```levelAttributeValue()``` function.
 

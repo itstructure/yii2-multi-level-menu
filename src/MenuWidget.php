@@ -157,14 +157,15 @@ class MenuWidget extends Widget
      */
     private function groupLevels(array $models): array
     {
-        if (count($models) == 0){
+        $modelsCount = count($models);
+
+        if ($modelsCount == 0){
             return [];
         }
 
         $items = [];
 
         /** @var ActiveRecord $item */
-        $modelsCount = count($models);
         for ($i=0; $i < $modelsCount; $i++) {
             $item = $models[$i];
 

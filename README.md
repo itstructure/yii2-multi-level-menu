@@ -29,12 +29,12 @@ Data from the **database** is taken from an active model, which instance of **yi
 
 Via composer:
 
-```composer require "itstructure/yii2-multi-level-menu": "^3.2.1"```
+```composer require "itstructure/yii2-multi-level-menu": "^3.2.2"```
 
 or in section **require** of composer.json file set the following:
 ```
 "require": {
-    "itstructure/yii2-multi-level-menu": "^3.2.1"
+    "itstructure/yii2-multi-level-menu": "^3.2.2"
 }
 ```
 and command ```composer install```, if you install yii2 project extensions first,
