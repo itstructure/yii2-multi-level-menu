@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.2.3 August 9, 2018:**
+- Code fixes according with the PSR standards.
+
 **3.2.2 June 27, 2018:**
 - Modify ```groupLevels()``` function for the count of models.
 

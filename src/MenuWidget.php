@@ -29,66 +29,77 @@ class MenuWidget extends Widget
 {
     /**
      * Init level menu html tag id.
+     *
      * @var string
      */
     public $menuId;
 
     /**
      * Primary key name.
+     *
      * @var string
      */
     public $primaryKeyName = 'id';
 
     /**
      * Relation key name.
+     *
      * @var string
      */
     public $parentKeyName = 'parentId';
 
     /**
      * Main container html tag.
+     *
      * @var string|array
      */
     public $mainContainerTag = 'ul';
 
     /**
      * Main container html options.
+     *
      * @var array
      */
     public $mainContainerOptions = [];
 
     /**
      * Item container html tag.
+     *
      * @var string|array
      */
     public $itemContainerTag = 'li';
 
     /**
      * Item container html options.
+     *
      * @var array
      */
     public $itemContainerOptions = [];
 
     /**
      * Item template to display widget elements.
+     *
      * @var string|array
      */
     public $itemTemplate;
 
     /**
      * Addition item template params.
+     *
      * @var array
      */
     public $itemTemplateParams = [];
 
     /**
      * Data records.
+     *
      * @var ActiveRecord[]
      */
     public $data;
 
     /**
      * Starts the output widget of the multi level view records according with the menu type.
+     *
      * @throws InvalidConfigException
      */
     public function run()
@@ -100,23 +111,33 @@ class MenuWidget extends Widget
 
     /**
      * Check whether a particular record can be used as a parent.
+     *
      * @param ActiveRecord $mainModel
      * @param int $newParentId
      * @param string $primaryKeyName
      * @param string $parentKeyName
+     *
      * @return bool
      */
-    public static function checkNewParentId(ActiveRecord $mainModel, int $newParentId, string $primaryKeyName = 'id', string $parentKeyName = 'parentId'): bool
-    {
-        $parentRecord = $mainModel::find()->select([$primaryKeyName, $parentKeyName])->where([
+    public static function checkNewParentId(
+        ActiveRecord $mainModel,
+        int $newParentId,
+        string $primaryKeyName = 'id',
+        string $parentKeyName = 'parentId'
+    ): bool {
+
+        $parentRecord = $mainModel::find()->select([
+            $primaryKeyName,
+            $parentKeyName
+        ])->where([
             $primaryKeyName => $newParentId
         ])->one();
 
-        if ($mainModel->{$primaryKeyName} === $parentRecord->{$primaryKeyName}){
+        if ($mainModel->{$primaryKeyName} === $parentRecord->{$primaryKeyName}) {
             return false;
         }
 
-        if (null === $parentRecord->{$parentKeyName}){
+        if (null === $parentRecord->{$parentKeyName}) {
             return true;
         }
 
@@ -125,41 +146,56 @@ class MenuWidget extends Widget
 
     /**
      * Reassigning child objects to their new parent after delete the main model record.
+     *
      * @param ActiveRecord $mainModel
      * @param string $primaryKeyName
      * @param string $parentKeyName
+     *
+     * @return void
      */
-    public static function afterDeleteMainModel(ActiveRecord $mainModel, string $primaryKeyName = 'id', string $parentKeyName = 'parentId'): void
-    {
-        $mainModel::updateAll([$parentKeyName => $mainModel->{$parentKeyName}], ['=', $parentKeyName, $mainModel->{$primaryKeyName}]);
+    public static function afterDeleteMainModel(
+        ActiveRecord $mainModel,
+        string $primaryKeyName = 'id',
+        string $parentKeyName = 'parentId'
+    ): void {
+
+        $mainModel::updateAll([
+            $parentKeyName => $mainModel->{$parentKeyName}
+        ], [
+            '=', $parentKeyName, $mainModel->{$primaryKeyName}
+        ]);
     }
 
     /**
      * Check for configure.
+     *
      * @throws InvalidConfigException
      */
     private function checkConfiguration()
     {
-        if (null === $this->itemTemplate){
-            throw  new InvalidConfigException('Item template is not defined.');
+        if (null === $this->itemTemplate) {
+            throw new InvalidConfigException('Item template is not defined.');
         }
 
-        if (is_array($this->itemTemplate) && !isset($this->itemTemplate['levels'])){
-            throw  new InvalidConfigException('If item template is array, that has to contain levels key.');
+        if (is_array($this->itemTemplate) && !isset($this->itemTemplate['levels'])) {
+            throw new InvalidConfigException('If item template is array, that has to contain levels key.');
         }
     }
 
     /**
      * Group records in to sub levels according with the relation to parent records.
+     *
      * @param array $models
+     *
      * @throws InvalidConfigException
+     *
      * @return array
      */
     private function groupLevels(array $models): array
     {
         $modelsCount = count($models);
 
-        if ($modelsCount == 0){
+        if ($modelsCount == 0) {
             return [];
         }
 
@@ -169,7 +205,7 @@ class MenuWidget extends Widget
         for ($i=0; $i < $modelsCount; $i++) {
             $item = $models[$i];
 
-            if (!($item instanceof ActiveRecord)){
+            if (!($item instanceof ActiveRecord)) {
                 throw  new InvalidConfigException('Record with '.$i.' key must be an instance of ActiveRecord.');
             }
 
@@ -177,9 +213,13 @@ class MenuWidget extends Widget
         }
 
         /** @var ActiveRecord $data */
-        foreach($items as $row) {
+        foreach ($items as $row) {
+
             $data = $row['data'];
-            $parentKey = !isset($data->{$this->parentKeyName}) || empty($data->{$this->parentKeyName}) ? 0 : $data->{$this->parentKeyName};
+
+            $parentKey = !isset($data->{$this->parentKeyName}) || empty($data->{$this->parentKeyName}) ?
+                0 : $data->{$this->parentKeyName};
+
             $items[$parentKey]['items'][$data->{$this->primaryKeyName}] = &$items[$data->{$this->primaryKeyName}];
         }
 
@@ -188,13 +228,15 @@ class MenuWidget extends Widget
 
     /**
      * Base render.
+     *
      * @param array $items
      * @param int $level
+     *
      * @return string
      */
     private function renderItems(array $items, int $level = 0): string
     {
-        if (count($items) == 0){
+        if (count($items) == 0) {
             return '';
         }
 
@@ -202,22 +244,30 @@ class MenuWidget extends Widget
 
         /** @var array $item */
         foreach ($items as $item) {
+
             $contentLi = $this->render($this->levelAttributeValue($this->itemTemplate, $level), ArrayHelper::merge([
                 'data' => $item['data']
             ], $this->levelAttributeValue($this->itemTemplateParams, $level)));
 
-            if (isset($item['items'])){
+            if (isset($item['items'])) {
                 $contentLi .= $this->renderItems($item['items'], $level + 1);
             }
+
             $itemContainerTag = $this->levelAttributeValue($this->itemContainerTag, $level);
-            $outPut .= Html::tag($itemContainerTag, $contentLi, $this->levelAttributeValue($this->itemContainerOptions, $level));
+            $outPut .= Html::tag(
+                $itemContainerTag,
+                $contentLi,
+                $this->levelAttributeValue($this->itemContainerOptions, $level)
+            );
         }
 
         $mainContainerTag = $this->levelAttributeValue($this->mainContainerTag, $level);
         $mainContainerOptions = $this->levelAttributeValue($this->mainContainerOptions, $level);
 
-        if ($level == 0 && null !== $this->menuId){
-            $mainContainerOptions = ArrayHelper::merge($mainContainerOptions, ['id' => $this->menuId]);
+        if ($level == 0 && null !== $this->menuId) {
+            $mainContainerOptions = ArrayHelper::merge($mainContainerOptions, [
+                'id' => $this->menuId
+            ]);
         }
 
         return Html::tag($mainContainerTag, $outPut, $mainContainerOptions);
@@ -225,30 +275,34 @@ class MenuWidget extends Widget
 
     /**
      * Get attribute values in current level.
+     *
      * @param string|array $attributeValue
      * @param int $level
+     *
      * @throws InvalidConfigException
+     *
      * @return mixed
      */
     private function levelAttributeValue($attributeValue, int $level)
     {
-        if (is_string($attributeValue)){
+        if (is_string($attributeValue)) {
             return $attributeValue;
         }
 
-        if (is_array($attributeValue) && !isset($attributeValue['levels'])){
+        if (is_array($attributeValue) && !isset($attributeValue['levels'])) {
             return $attributeValue;
         }
 
-        if (is_array($attributeValue) && isset($attributeValue['levels'])){
+        if (is_array($attributeValue) && isset($attributeValue['levels'])) {
 
             $countLevels = count($attributeValue['levels']);
 
-            if ($countLevels == 0){
+            if ($countLevels == 0) {
                 throw new InvalidConfigException('Level values are not defined for attribute.');
             }
 
-            return isset($attributeValue['levels'][$level]) ? $attributeValue['levels'][$level] : $attributeValue['levels'][($countLevels-1)];
+            return isset($attributeValue['levels'][$level]) ?
+                $attributeValue['levels'][$level] : $attributeValue['levels'][($countLevels-1)];
         }
 
         throw new InvalidConfigException('Attribute is not defined correctly.');
