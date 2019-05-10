@@ -29,12 +29,12 @@ Data from the **database** is taken from an active model, which instance of **yi
 
 Via composer:
 
-```composer require "itstructure/yii2-multi-level-menu": "^3.2.3"```
+```composer require itstructure/yii2-multi-level-menu ^3.2.4```
 
 or in section **require** of composer.json file set the following:
 ```
 "require": {
-    "itstructure/yii2-multi-level-menu": "^3.2.3"
+    "itstructure/yii2-multi-level-menu": "^3.2.4"
 }
 ```
 and command ```composer install```, if you install yii2 project extensions first,
@@ -96,6 +96,42 @@ echo MenuWidget::widget([
 ]);
 ```
 
+Example when there are some properties as callable function:
+
+```php
+use Itstructure\MultiLevelMenu\MenuWidget;
+```
+```php
+echo MenuWidget::widget([
+    'menuId' => 'multi-level-menu',
+    'data' => array_values($dataProvider->getModels()),
+    'itemTemplate' => '@app/views/MultiLevelMenu/main.php'
+    'mainContainerOptions' => function () {
+        return [
+            'class' => $level == 0 ? 'nav navbar-nav navbar-right' : 'dropdown-menu'
+        ];
+    },
+    'itemTemplateParams' => function ($level, $item) {
+        return [
+            'linkOptions' => isset($item['items']) && count($item['items']) > 0 ? [
+                'class' => 'dropdown-toggle',
+                'data-toggle' => 'dropdown',
+                'aria-haspopup' => 'true',
+                'aria-expanded' => 'false',
+            ] : [],
+        ];
+    },
+    'itemContainerOptions' => function ($level, $item) {
+        return $level == 0 ? [
+            'class' => isset($item['items']) && count($item['items']) > 0 ? 'nav-item dropdown' : 'nav-item'
+        ] : [
+            'class' => isset($item['items']) && count($item['items']) > 0 ? 'dropdown-item dropdown' : 'dropdown-item'
+        ];
+    }
+]);
+```
+
+
 ### 4.2 Database table structure example
 
 ```Table "pages"```
@@ -119,6 +155,6 @@ echo MenuWidget::widget([
 License
 ----------------------------
 
-Copyright © 2018 Andrey Girnik girnikandrey@gmail.com.
+Copyright © 2019 Andrey Girnik girnikandrey@gmail.com.
 
 Licensed under the [MIT license](http://opensource.org/licenses/MIT). See LICENSE.txt for details.

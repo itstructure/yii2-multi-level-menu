@@ -13,12 +13,12 @@ use yii\base\{Widget, InvalidConfigException};
  * @property string $menuId Init level menu html tag id.
  * @property string $primaryKeyName Primary key name.
  * @property string $parentKeyName Relation key name.
- * @property string|array $mainContainerTag Main container html tag.
- * @property array $mainContainerOptions Main container html options.
- * @property string|array $itemContainerTag Item container html tag.
- * @property array $itemContainerOptions Item container html options.
- * @property string|array $itemTemplate Item template to display widget elements.
- * @property array $itemTemplateParams Addition item template params.
+ * @property string|array|callable $mainContainerTag Main container html tag.
+ * @property array|callable $mainContainerOptions Main container html options.
+ * @property string|array|callable $itemContainerTag Item container html tag.
+ * @property array|callable $itemContainerOptions Item container html options.
+ * @property string|array|callable $itemTemplate Item template to display widget elements.
+ * @property array|callable $itemTemplateParams Addition item template params.
  * @property ActiveRecord[] $data Data records.
  *
  * @package Itstructure\MultiLevelMenu
@@ -51,42 +51,42 @@ class MenuWidget extends Widget
     /**
      * Main container html tag.
      *
-     * @var string|array
+     * @var string|array|callable
      */
     public $mainContainerTag = 'ul';
 
     /**
      * Main container html options.
      *
-     * @var array
+     * @var array|callable
      */
     public $mainContainerOptions = [];
 
     /**
      * Item container html tag.
      *
-     * @var string|array
+     * @var string|array|callable
      */
     public $itemContainerTag = 'li';
 
     /**
      * Item container html options.
      *
-     * @var array
+     * @var array|callable
      */
     public $itemContainerOptions = [];
 
     /**
      * Item template to display widget elements.
      *
-     * @var string|array
+     * @var string|array|callable
      */
     public $itemTemplate;
 
     /**
      * Addition item template params.
      *
-     * @var array
+     * @var array|callable
      */
     public $itemTemplateParams = [];
 
@@ -245,19 +245,19 @@ class MenuWidget extends Widget
         /** @var array $item */
         foreach ($items as $item) {
 
-            $contentLi = $this->render($this->levelAttributeValue($this->itemTemplate, $level), ArrayHelper::merge([
+            $contentLi = $this->render($this->levelAttributeValue($this->itemTemplate, $level, $item), ArrayHelper::merge([
                 'data' => $item['data']
-            ], $this->levelAttributeValue($this->itemTemplateParams, $level)));
+            ], $this->levelAttributeValue($this->itemTemplateParams, $level, $item)));
 
             if (isset($item['items'])) {
                 $contentLi .= $this->renderItems($item['items'], $level + 1);
             }
 
-            $itemContainerTag = $this->levelAttributeValue($this->itemContainerTag, $level);
+            $itemContainerTag = $this->levelAttributeValue($this->itemContainerTag, $level, $item);
             $outPut .= Html::tag(
                 $itemContainerTag,
                 $contentLi,
-                $this->levelAttributeValue($this->itemContainerOptions, $level)
+                $this->levelAttributeValue($this->itemContainerOptions, $level, $item)
             );
         }
 
@@ -276,17 +276,22 @@ class MenuWidget extends Widget
     /**
      * Get attribute values in current level.
      *
-     * @param string|array $attributeValue
+     * @param $attributeValue
      * @param int $level
-     *
-     * @throws InvalidConfigException
+     * @param array $item
      *
      * @return mixed
+     *
+     * @throws InvalidConfigException
      */
-    private function levelAttributeValue($attributeValue, int $level)
+    private function levelAttributeValue($attributeValue, int $level, array $item = [])
     {
         if (is_string($attributeValue)) {
             return $attributeValue;
+        }
+
+        if (is_callable($attributeValue)) {
+            return call_user_func($attributeValue, $level, $item);
         }
 
         if (is_array($attributeValue) && !isset($attributeValue['levels'])) {
@@ -301,8 +306,14 @@ class MenuWidget extends Widget
                 throw new InvalidConfigException('Level values are not defined for attribute.');
             }
 
-            return isset($attributeValue['levels'][$level]) ?
+            $levelValue = isset($attributeValue['levels'][$level]) ?
                 $attributeValue['levels'][$level] : $attributeValue['levels'][($countLevels-1)];
+
+            if (is_callable($levelValue)) {
+                return call_user_func($levelValue, $level, $item);
+            }
+
+            return $levelValue;
         }
 
         throw new InvalidConfigException('Attribute is not defined correctly.');

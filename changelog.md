@@ -1,5 +1,14 @@
 ### CHANGE LOG:
 
+**3.2.4 May 10, 2019:**
+- Support callable type for the next attributes:
+    - ```mainContainerTag```
+    - ```mainContainerOptions```
+    - ```itemContainerTag```
+    - ```itemContainerOptions```
+    - ```itemTemplate```
+    - ```itemTemplateParams```
+
 **3.2.3 August 9, 2018:**
 - Code fixes according with the PSR standards.
 
