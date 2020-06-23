@@ -1,8 +1,7 @@
 Yii2 Multilevel menu widget
 ==============
 
-1 Introduction
-----------------------------
+## Introduction
 
 [![Latest Stable Version](https://poser.pugx.org/itstructure/yii2-multi-level-menu/v/stable)](https://packagist.org/packages/itstructure/yii2-multi-level-menu)
 [![Latest Unstable Version](https://poser.pugx.org/itstructure/yii2-multi-level-menu/v/unstable)](https://packagist.org/packages/itstructure/yii2-multi-level-menu)
@@ -17,39 +16,39 @@ The widget uses data from the **database**, in which there are, in addition to t
 
 Data from the **database** is taken from an active model, which instance of **yii\db\ActiveRecord**.
 
-2 Dependencies
-----------------------------
+## Dependencies
 
 - php >= 7.1
 - composer
-- Yii2 = 2.*
 
-3 Installation
-----------------------------
+## Installation
 
 Via composer:
 
-```composer require itstructure/yii2-multi-level-menu ^3.2.4```
+`composer require itstructure/yii2-multi-level-menu ~3.2.5`
 
 or in section **require** of composer.json file set the following:
-```
+
+```json
 "require": {
-    "itstructure/yii2-multi-level-menu": "^3.2.4"
+    "itstructure/yii2-multi-level-menu": "~3.2.5"
 }
 ```
-and command ```composer install```, if you install yii2 project extensions first,
 
-or command ```composer update```, if all yii2 project extensions are already installed.
+and command `composer install`, if you install yii2 project extensions first,
 
-## 4 Usage
+or command `composer update`, if all yii2 project extensions are already installed.
 
-### 4.1 Usage in view template
+## Usage
+
+### Usage in view template
 
 Base application config must be like in example below:
 
 ```php
 use Itstructure\MultiLevelMenu\MenuWidget;
 ```
+
 ```php
 echo MenuWidget::widget([
     'menuId' => 'multi-level-menu',
@@ -58,13 +57,14 @@ echo MenuWidget::widget([
 ]);
 ```
 
-Example of ```itemTemplate``` file:
+Example of `itemTemplate` file:
 
 ```php
 use yii\helpers\{Url, Html};
 /* @var app\models\Page $data */
 ```
-```html
+
+```php
 <span>
     <?php echo Html::a(
         Html::encode($data->title),
@@ -78,6 +78,7 @@ Example when there are some properties for nesting levels:
 ```php
 use Itstructure\MultiLevelMenu\MenuWidget;
 ```
+
 ```php
 echo MenuWidget::widget([
     'menuId' => 'multi-level-menu',
@@ -101,6 +102,7 @@ Example when there are some properties as callable function:
 ```php
 use Itstructure\MultiLevelMenu\MenuWidget;
 ```
+
 ```php
 echo MenuWidget::widget([
     'menuId' => 'multi-level-menu',
@@ -132,29 +134,26 @@ echo MenuWidget::widget([
 ```
 
 
-### 4.2 Database table structure example
+### Database table structure example
 
-```Table "pages"```
+`Table "pages"`
 
-```php
-| id  | parentId | title | ... |
-|-----|----------|-------|-----|
-|  1  |   NULL   | page1 | ... |
-|  2  |   NULL   | page2 | ... |
-|  3  |     1    | page3 | ... |
-|  4  |     1    | page4 | ... |
-|  5  |     4    | page5 | ... |
-|  6  |     4    | page6 | ... |
-|  7  |     3    | page7 | ... |
-|  8  |     3    | page8 | ... |
-|  9  |   NULL   | page9 | ... |
-|  10 |   NULL   | page10| ... |
-| ... |    ...   |  ...  | ... |
-```
+    | id  | parentId | title | ... |
+    |-----|----------|-------|-----|
+    |  1  |   NULL   | page1 | ... |
+    |  2  |   NULL   | page2 | ... |
+    |  3  |     1    | page3 | ... |
+    |  4  |     1    | page4 | ... |
+    |  5  |     4    | page5 | ... |
+    |  6  |     4    | page6 | ... |
+    |  7  |     3    | page7 | ... |
+    |  8  |     3    | page8 | ... |
+    |  9  |   NULL   | page9 | ... |
+    |  10 |   NULL   | page10| ... |
+    | ... |    ...   |  ...  | ... |
 
-License
-----------------------------
+## License
 
-Copyright © 2019 Andrey Girnik girnikandrey@gmail.com.
+Copyright © 2018-2020 Andrey Girnik girnikandrey@gmail.com.
 
 Licensed under the [MIT license](http://opensource.org/licenses/MIT). See LICENSE.txt for details.
