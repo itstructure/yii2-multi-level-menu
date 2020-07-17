@@ -16,7 +16,9 @@ The widget uses data from the **database**, in which there are, in addition to t
 
 Data from the **database** is taken from an active model, which instance of **yii\db\ActiveRecord**.
 
-## Dependencies
+![Multi level menu example scheme](https://github.com/itstructure/yii2-multi-level-menu/blob/master/ML_menu_en.jpg)
+
+## Requirements
 
 - php >= 7.1
 - composer
@@ -25,19 +27,7 @@ Data from the **database** is taken from an active model, which instance of **yi
 
 Via composer:
 
-`composer require itstructure/yii2-multi-level-menu ~3.2.5`
-
-or in section **require** of composer.json file set the following:
-
-```json
-"require": {
-    "itstructure/yii2-multi-level-menu": "~3.2.5"
-}
-```
-
-and command `composer install`, if you install yii2 project extensions first,
-
-or command `composer update`, if all yii2 project extensions are already installed.
+`composer require itstructure/yii2-multi-level-menu ~3.2.6`
 
 ## Usage
 
@@ -138,19 +128,19 @@ echo MenuWidget::widget([
 
 `Table "pages"`
 
-    | id  | parentId | title | ... |
-    |-----|----------|-------|-----|
-    |  1  |   NULL   | page1 | ... |
-    |  2  |   NULL   | page2 | ... |
-    |  3  |     1    | page3 | ... |
-    |  4  |     1    | page4 | ... |
-    |  5  |     4    | page5 | ... |
-    |  6  |     4    | page6 | ... |
-    |  7  |     3    | page7 | ... |
-    |  8  |     3    | page8 | ... |
-    |  9  |   NULL   | page9 | ... |
-    |  10 |   NULL   | page10| ... |
-    | ... |    ...   |  ...  | ... |
+    | id  | parentId |   title    | ... |
+    |-----|----------|------------|-----|
+    |  1  |   NULL   |   item 1   | ... |
+    |  2  |   NULL   |   item 2   | ... |
+    |  3  |   NULL   |   item 3   | ... |
+    |  4  |   NULL   |   item 4   | ... |
+    |  5  |   NULL   |   item 5   | ... |
+    |  6  |     2    |  item 2.1  | ... |
+    |  7  |     2    |  item 2.2  | ... |
+    |  8  |     7    | item 2.2.1 | ... |
+    |  9  |     7    | item 2.2.2 | ... |
+    |  10 |     7    | item 2.2.3 | ... |
+    | ... |    ...   |     ...    | ... |
 
 ## License
 

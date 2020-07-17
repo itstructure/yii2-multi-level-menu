@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.2.6 July 17, 2020:**
+- Readme instruction fixes.
+
 **3.2.5 June 23, 2020:**
 - Modify README syntax.
 
