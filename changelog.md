@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.2.7 August 11, 2020:**
+- Add new param `$parentItem` to `renderItems()` private method.
+
 **3.2.6 July 17, 2020:**
 - Readme instruction fixes.
 

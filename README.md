@@ -27,7 +27,7 @@ Data from the **database** is taken from an active model, which instance of **yi
 
 Via composer:
 
-`composer require itstructure/yii2-multi-level-menu ~3.2.6`
+`composer require itstructure/yii2-multi-level-menu ~3.2.7`
 
 ## Usage
 

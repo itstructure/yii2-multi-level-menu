@@ -231,10 +231,11 @@ class MenuWidget extends Widget
      *
      * @param array $items
      * @param int $level
+     * @param array $parentItem
      *
      * @return string
      */
-    private function renderItems(array $items, int $level = 0): string
+    private function renderItems(array $items, int $level = 0, $parentItem = []): string
     {
         if (count($items) == 0) {
             return '';
@@ -250,7 +251,7 @@ class MenuWidget extends Widget
             ], $this->levelAttributeValue($this->itemTemplateParams, $level, $item)));
 
             if (isset($item['items'])) {
-                $contentLi .= $this->renderItems($item['items'], $level + 1);
+                $contentLi .= $this->renderItems($item['items'], $level + 1, $item);
             }
 
             $itemContainerTag = $this->levelAttributeValue($this->itemContainerTag, $level, $item);
@@ -261,8 +262,8 @@ class MenuWidget extends Widget
             );
         }
 
-        $mainContainerTag = $this->levelAttributeValue($this->mainContainerTag, $level);
-        $mainContainerOptions = $this->levelAttributeValue($this->mainContainerOptions, $level);
+        $mainContainerTag = $this->levelAttributeValue($this->mainContainerTag, $level, $parentItem);
+        $mainContainerOptions = $this->levelAttributeValue($this->mainContainerOptions, $level, $parentItem);
 
         if ($level == 0 && null !== $this->menuId) {
             $mainContainerOptions = ArrayHelper::merge($mainContainerOptions, [
