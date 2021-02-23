@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.2.8 February 23, 2021:**
+- Upgrade copyright year.
+
 **3.2.7 August 11, 2020:**
 - Add new param `$parentItem` to `renderItems()` private method.
 
