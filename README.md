@@ -27,7 +27,7 @@ Data from the **database** is taken from an active model, which instance of **yi
 
 Via composer:
 
-`composer require itstructure/yii2-multi-level-menu ~3.2.8`
+`composer require itstructure/yii2-multi-level-menu ~3.2.9`
 
 ## Usage
 
@@ -144,6 +144,6 @@ echo MenuWidget::widget([
 
 ## License
 
-Copyright © 2018-2021 Andrey Girnik girnikandrey@gmail.com.
+Copyright © 2018-2023 Andrey Girnik girnikandrey@gmail.com.
 
 Licensed under the [MIT license](http://opensource.org/licenses/MIT). See LICENSE.txt for details.

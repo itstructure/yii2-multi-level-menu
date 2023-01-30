@@ -1,5 +1,8 @@
 ### CHANGE LOG:
 
+**3.2.9 January 30, 2023:**
+- Upgrade copyright year.
+
 **3.2.8 February 23, 2021:**
 - Upgrade copyright year.
 
