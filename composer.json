@@ -5,7 +5,7 @@
     "keywords": ["yii2", "yii 2", "menu", "multilevel"],
     "require": {
         "php": ">=7.1.0",
-        "yiisoft/yii2": "2.*"
+        "yiisoft/yii2": "~2.0.0"
     },
     "license": "MIT",
     "authors": [

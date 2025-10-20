@@ -10,7 +10,7 @@ Yii2 Multilevel menu widget
 [![Build Status](https://scrutinizer-ci.com/g/itstructure/yii2-multi-level-menu/badges/build.png?b=master)](https://scrutinizer-ci.com/g/itstructure/yii2-multi-level-menu/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/itstructure/yii2-multi-level-menu/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/itstructure/yii2-multi-level-menu/?branch=master)
 
-This widget is designed to display a multilevel menu, in which there can be nested submenus. Used for Yii2 framework.
+This widget is designed to display a multilevel menu, in which there can be nested submenus. Used for Yii2 v2.0.x framework.
 
 The widget uses data from the **database**, in which there are, in addition to the primary keys, also the parent keys.
 
@@ -21,13 +21,13 @@ Data from the **database** is taken from an active model, which instance of **yi
 ## Requirements
 
 - php >= 7.1
-- composer
+- composer 2
 
 ## Installation
 
 Via composer:
 
-`composer require itstructure/yii2-multi-level-menu ~3.2.9`
+`composer require itstructure/yii2-multi-level-menu ~3.2.10`
 
 ## Usage
 
@@ -144,6 +144,6 @@ echo MenuWidget::widget([
 
 ## License
 
-Copyright © 2018-2023 Andrey Girnik girnikandrey@gmail.com.
+Copyright © 2018-2025 Andrey Girnik girnikandrey@gmail.com.
 
 Licensed under the [MIT license](http://opensource.org/licenses/MIT). See LICENSE.txt for details.
